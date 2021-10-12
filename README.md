@@ -10,7 +10,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Inital setup
 - In the project directory, run:
-    - `yarn install`
+    - `npm install`
 
 ## Start project
 - `yarn start`
@@ -20,7 +20,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Compiling css
 
--   When you run **yarn start**, the styles are compiled **automatically**. no need to use bash compiler. 
+-   When you run **npm start**, the styles are compiled **automatically**. no need to use bash compiler. 
 
 ## Redux debug
 -   for convenient debugging of the Redux, you can use the Redux-Dev-Tools [extension](https://chrome.google.com/
