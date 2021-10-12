@@ -13,7 +13,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     - `npm install`
 
 ## Start project
-- `yarn start`
+- `npm start`
 - Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
   The page will auto-reload as soon as you save.<br />
   You will also see any lint errors in the console.
