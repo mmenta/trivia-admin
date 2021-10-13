@@ -2,8 +2,9 @@
 @import "./global/init";
 
 //components
+@import "../components/header/styles/init";
+@import "../components/sidebar/styles/init";
 
 // pages
 @import "../containers/home/styles/init";
 @import "../containers/detail/styles/init";
-

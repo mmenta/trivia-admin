@@ -1,3 +1,6 @@
 .test {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Georgia;
+
+    @include Bebas-Neue();
 }

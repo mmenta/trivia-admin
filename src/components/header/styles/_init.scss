@@ -1,19 +1,10 @@
-// global variables
-@import 'vars';
-
-// global resets
-@import 'resets';
-
-// fonts
-@import 'fonts';
-
 /*  Use "desktop" for default styling, then override with tablet & mobile */
-@import "desktop";
+@import 'desktop';
 
 @media screen and (max-width: $tablet-bp) {
-    @import "tablet";
+  @import 'tablet';
 }
 
 @media screen and (max-width: $mobile-bp) {
-    @import "mobile";
+  @import 'mobile';
 }

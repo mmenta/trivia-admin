@@ -1,0 +1,65 @@
+.header-container {
+    display: flex;
+    width: 100%;
+    height: 150px;
+    align-items: center;
+    justify-content: space-between;
+
+    .logo-main {
+        margin-left: 25px;
+        
+        .logo-text {
+            @include Bebas-Neue();
+            font-size: 32px;
+        }
+        .logo-sub {
+            display: block;
+            @include OpenSans-Regular();
+            font-size: 14px;
+        }
+    }
+
+    .menu-btn-container {
+        position: relative;
+        width: 40px;
+        height: 20px;
+        margin-right: 25px;
+        cursor: pointer;
+
+        &.active {
+            span {
+                display: inline-block;
+                
+                &.line {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    transform: rotate(-135deg);
+                }
+
+                &.line-alt {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    transform: rotate(135deg);
+                }
+            }
+        }
+
+        span {
+            transition: all 0.2s;
+            position: absolute;
+            display: block;
+            width: 100%;
+            border-top: solid 5px #000;
+
+            &.line {
+                top: 0;
+            }
+
+            &.line-alt {
+                top: 10px;
+            }
+        }
+    }
+}
