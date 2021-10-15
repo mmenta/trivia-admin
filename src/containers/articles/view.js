@@ -1,0 +1,15 @@
+import React, {} from 'react';
+
+class ArticlesView extends React.Component {
+    render() {
+        return (
+            <div className={['articles-container content-container']}>
+                <div className={'column-header'}>
+                    Articles
+                </div>
+            </div>
+        )
+    }
+}
+
+export default ArticlesView;

@@ -1,19 +1,27 @@
 #root {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 0 auto;
-    max-width: 1200px;
     overflow: hidden;
+}
 
-    .app-container {
-        ul {
-            display: flex;
-            margin-bottom: 30px;
-            li {
-                margin: 10px;
-                font-size: 30px;
-            }
-        }
-    }
+.content-container {
+    display: flex;
+    position: absolute;
+    right: 0;
+    width: calc(100% - 300px);
+    height: calc(100% - 150px);
+    justify-content: center;
+}
+
+.column-header {
+    display: flex;
+    width: 80%;
+    height: 50px;
+    padding-left: 20px;
+    margin-top: 50px;
+    background: #cacaca;
+    border-radius: 5px;
+    @include Bebas-Neue();
+    align-items: center;
+    font-size: 22px;
 }

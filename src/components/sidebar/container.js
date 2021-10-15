@@ -4,7 +4,7 @@ import SidebarView from './view';
 function SidebarContainer(props) {
 
     return (
-      <SidebarView data={props} />
+        <SidebarView data={props} />
     );
 }
 

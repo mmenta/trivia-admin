@@ -9,8 +9,11 @@ import HeaderView from './components/header/';
 import SidebarView from './components/sidebar/';
 import history from './config/history';
 
-const HomeContainer = React.lazy(() => import('./containers/home'));
-const DetailContainer = React.lazy(() => import('./containers/detail'));
+const QuestionsContainer = React.lazy(() => import('./containers/questions'));
+const TemplatesContainer = React.lazy(() => import('./containers/templates'));
+const ArticlesContainer = React.lazy(() => import('./containers/articles'));
+const CampaignsContainer = React.lazy(() => import('./containers/campaigns'));
+
 const firebaseConfig = {
 	apiKey: "AIzaSyBXFEkNhGKJgP_We4zacdi7PwFG38KD2pw",
 	authDomain: "trivia-7527d.firebaseapp.com",
@@ -38,7 +41,6 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<>
 			<Router history={history}>
 				<HeaderView 
 					history={history}
@@ -53,17 +55,22 @@ class App extends React.Component {
 				<Suspense fallback={<span>Loading...</span>}>
 					<div className={'app-container'}>
 						<Switch>
-							<Route path='/detail'>
-								<DetailContainer />
+							<Route exact path='/'>
+								<QuestionsContainer />
 							</Route>
-							<Route path='/'>
-								<HomeContainer />
+							<Route path='/templates'>
+								<TemplatesContainer />
+							</Route>
+							<Route path='/articles'>
+								<ArticlesContainer />
+							</Route>
+							<Route path='/campaigns'>
+								<CampaignsContainer />
 							</Route>
 						</Switch>
 					</div>
 				</Suspense>
 			</Router>
-			</>
 		);
 	}
 }

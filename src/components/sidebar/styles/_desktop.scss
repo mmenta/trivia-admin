@@ -3,12 +3,19 @@
     display: flex;
     top: 150px;
     left: 0;
-    width: 100%;
     height: calc(100vh - 150px);
-    border: solid 1px red;
     background: #fff;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s;
+    width: 300px;
+    border-top: solid 5px red;
+    z-index: 9;
+
+    &.active {
+        width: 100%;
+        min-width: none;
+    }
 
     .menu-container {
         li {

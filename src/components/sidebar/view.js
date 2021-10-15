@@ -1,33 +1,50 @@
 import React, {} from 'react';
-
+import {
+    NavLink
+} from 'react-router-dom';
 
 class SidebarView extends React.Component {
-
-    handleClick = (path) => {
-        console.log('path: ', path);
-        this.props.data.history.push(path);
-        this.props.data.toggleSidebar(false);
-    }
-
+    
     render() {
         let { show } = this.props.data;
-        if (!show) return null;
+        let menuState = show ? 
+            'sidebar-container active' : 'sidebar-container';
 
         return (
             <>
-            <div className={'sidebar-container'}>
+            <div className={[menuState]}>
                 <ul className={'menu-container'}>
-                    <li onClick={() => this.handleClick('/')}>
-                        Questions
+                    <li>
+                        <NavLink
+                            to={'/'}
+                            onClick={() => this.props.data.toggleSidebar(false)}
+                        >
+                            Questions
+                        </NavLink>
                     </li>
-                    <li onClick={() => this.handleClick('/detail')}>
-                        Templates
+                    <li>
+                        <NavLink
+                            to={'/templates'}
+                            onClick={() => this.props.data.toggleSidebar(false)}
+                        >
+                            Templates
+                        </NavLink>
                     </li>
-                    <li onClick={() => this.handleClick('/')}>
-                        Articles
+                    <li>
+                        <NavLink
+                            to={'/articles'}
+                            onClick={() => this.props.data.toggleSidebar(false)}
+                        >
+                            Articles
+                        </NavLink>
                     </li>
-                    <li onClick={() => this.handleClick('/detail')}>
-                        Campaign
+                    <li>
+                        <NavLink
+                            to={'/campaigns'}
+                            onClick={() => this.props.data.toggleSidebar(false)}
+                        >
+                            Campaigns
+                        </NavLink>
                     </li>
                 </ul>
             </div>
