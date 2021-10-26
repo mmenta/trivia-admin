@@ -5,8 +5,10 @@ class CampaignsView extends React.Component {
 
         return (
             <div className={['campaigns-container content-container']}>
-                <div className={'column-header'}>
-                    Campaigns
+                <div className={'content-inner'}>
+                    <div className={'column-header'}>
+                        Campaigns
+                    </div>
                 </div>
             </div>
         )

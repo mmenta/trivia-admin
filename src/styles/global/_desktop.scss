@@ -4,24 +4,92 @@
     overflow: hidden;
 }
 
+div {
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+}
+
 .content-container {
     display: flex;
     position: absolute;
     right: 0;
     width: calc(100% - 300px);
-    height: calc(100% - 150px);
     justify-content: center;
+}
+
+.content-inner {
+    display: flex;
+    flex-direction: column;
+    width: 80%;   
+    margin-top: 40px;
+    padding-bottom: 100px;
 }
 
 .column-header {
     display: flex;
-    width: 80%;
+    width: 100%;
     height: 50px;
     padding-left: 20px;
-    margin-top: 50px;
+    margin-bottom: 40px;
     background: #cacaca;
     border-radius: 5px;
     @include Bebas-Neue();
+    letter-spacing: 2px;
     align-items: center;
     font-size: 22px;
+}
+
+.action-column {
+    display: flex;
+    position: relative;
+    width: 100%;
+    padding: 15px 0;
+}
+
+.button {
+    display: flex;
+    flex-direction: row;
+    @include OpenSans-Regular;
+    font-size: 16px;
+    align-items: center;
+    cursor: pointer;
+}
+
+.icon-add {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    padding-top: 5px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: solid 3px #000;
+    @include Bebas-Neue();
+    font-size: 52px;
+    color: #000;
+}
+
+.add-text {
+    display: flex;
+    margin-left: 10px;
+    color: #000;
+}
+
+.btn-add-new {
+    margin-left: 5px;
+}
+
+.btn-save {
+    display: flex;
+    @include Bebas-Neue();
+    font-size: 22px;
+    border: solid 3px #000;
+    border-radius: 10px;
+    padding: 10px 40px;
+    letter-spacing: 3px;
+    align-self: flex-end;
+    cursor: pointer;
 }

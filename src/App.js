@@ -14,6 +14,8 @@ const TemplatesContainer = React.lazy(() => import('./containers/templates'));
 const ArticlesContainer = React.lazy(() => import('./containers/articles'));
 const CampaignsContainer = React.lazy(() => import('./containers/campaigns'));
 
+const AddQuestionContainer = React.lazy(() => import('./containers/addQuestion'));
+
 const firebaseConfig = {
 	apiKey: "AIzaSyBXFEkNhGKJgP_We4zacdi7PwFG38KD2pw",
 	authDomain: "trivia-7527d.firebaseapp.com",
@@ -66,6 +68,9 @@ class App extends React.Component {
 							</Route>
 							<Route path='/campaigns'>
 								<CampaignsContainer />
+							</Route>
+							<Route path='/add-question'>
+								<AddQuestionContainer />
 							</Route>
 						</Switch>
 					</div>
