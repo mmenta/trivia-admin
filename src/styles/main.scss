@@ -1,6 +1,9 @@
 // setup
 @import "./global/init";
 
+// plug-ins
+@import 'react-notifications/lib/notifications';
+
 //components
 @import "../components/header/styles/init";
 @import "../components/sidebar/styles/init";
