@@ -1,6 +1,7 @@
 import React, {} from 'react';
-
-import { NotificationContainer, NotificationManager } from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
+import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore"; 
+const db = getFirestore();
 
 class AddQuestionsView extends React.Component {
     constructor(props) {
@@ -9,25 +10,64 @@ class AddQuestionsView extends React.Component {
         this.state = {
             question: '',
             answers: [''],
-            answersCount: 1,
             correctAnswer: 0,
         }
     }
-    
-    doSave() {
-        console.log('this.state >> ', this.state);
 
+    componentDidUpdate(prevProps) {
+        if ( this.props.edit !== prevProps.edit ) {
+            if ( this.props.edit ) {
+             let { question, answers, correctAnswer } = this.props.data;
+                this.setState({
+                    question: question,
+                    answers: answers,
+                    correctAnswer: correctAnswer,
+                });
+            }
+        }
+    }
+    
+    async doSave() {
+        let { question, answers, correctAnswer } = this.state;
+
+        // show notification
         NotificationManager.success('Saved', '');
 
         // validate
 
 
         // save to firebase
+        // TODO: let's add a timestamp
+        if ( !this.props.edit ) {
+            await addDoc(collection(db, 'questions'), {
+                question: question,
+                answers: answers,
+                correctAnswer: correctAnswer,
+            }).then((doc) => {
+                console.log(`saved => ${doc.id} => `, this.state);
+            });
+        } else {
+            let { id } = this.props.history.location.state;
+            await setDoc(doc(db, 'questions', id), {
+                question: question,
+                answers: answers,
+                correctAnswer: correctAnswer,
+            });
+        }
 
-
-
+        // clear inputs
+        this.clearInputs();
 
         // redirect to questions list
+        this.props.history.push('/');
+    }
+
+    clearInputs() {
+        this.setState({
+            question: '',
+            answers: [''],
+            correctAnswer: 0,
+        });
     }
 
     doRemove(i) {
@@ -169,7 +209,7 @@ class AddQuestionsView extends React.Component {
                     </div>
                 </div>
             </div>
-            <NotificationContainer />
+            
             </>
         )
     }

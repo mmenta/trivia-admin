@@ -1,5 +1,27 @@
 .questions-container {
     box-sizing: border-box;
+
+    .row {
+        display: flex;
+        padding: 10px 0;
+        justify-content: center;
+        align-items: center;
+
+        .col {
+            flex: 1;
+            border: solid 1px red;
+            margin: 5px 10px;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .col-alt {
+            display: flex;
+            flex-direction: row;
+
+        }
+    }
 }
 
 .section {

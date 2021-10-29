@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { NotificationContainer } from 'react-notifications';
 import {
     BrowserRouter as Router,
     Switch,
@@ -54,12 +55,14 @@ class App extends React.Component {
 					show={this.state.sidebar} 
 					toggleSidebar={this.toggleSidebar}
 				/>
+				<NotificationContainer />
 				<Suspense fallback={<span>Loading...</span>}>
 					<div className={'app-container'}>
 						<Switch>
-							<Route exact path='/'>
-								<QuestionsContainer />
-							</Route>
+							<Route 
+								exact path='/'
+								component={QuestionsContainer}
+							/>
 							<Route path='/templates'>
 								<TemplatesContainer />
 							</Route>
@@ -69,9 +72,10 @@ class App extends React.Component {
 							<Route path='/campaigns'>
 								<CampaignsContainer />
 							</Route>
-							<Route path='/add-question'>
-								<AddQuestionContainer />
-							</Route>
+							<Route 
+								path='/add-question'
+								component={AddQuestionContainer}
+							/>
 						</Switch>
 					</div>
 				</Suspense>
