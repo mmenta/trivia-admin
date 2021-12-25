@@ -16,6 +16,7 @@ const ArticlesContainer = React.lazy(() => import('./containers/articles'));
 const CampaignsContainer = React.lazy(() => import('./containers/campaigns'));
 
 const AddQuestionContainer = React.lazy(() => import('./containers/addQuestion'));
+const AddTemplateContainer = React.lazy(() => import('./containers/addTemplate'));
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBXFEkNhGKJgP_We4zacdi7PwFG38KD2pw",
@@ -75,6 +76,10 @@ class App extends React.Component {
 							<Route 
 								path='/add-question'
 								component={AddQuestionContainer}
+							/>
+							<Route 
+								path='/add-template'
+								component={AddTemplateContainer}
 							/>
 						</Switch>
 					</div>

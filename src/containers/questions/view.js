@@ -6,9 +6,6 @@ import {
 class QuestionsView extends React.Component {
     constructor(props) {
         super(props);
-
-
-
     }
 
     viewQuestion(id) {
@@ -21,7 +18,6 @@ class QuestionsView extends React.Component {
         });
     }
 
-
     renderQuestions() {
         let { data } = this.props;
 
@@ -33,19 +29,15 @@ class QuestionsView extends React.Component {
                             <div className={'col'}>
                                 {e.id}
                             </div>
-
                             <div className={'col'}>
                                 {e.question}
                             </div>
-
                             <div className={'col'}>
                                 {e.answers[e.correctAnswer]}
                             </div>
-
                             <div className={'col'}>
                                 {'11/07/21'}
                             </div>
-
                             <div className={'col col-alt'}>
                                 <div 
                                     className={'button btn-view'}
@@ -53,7 +45,6 @@ class QuestionsView extends React.Component {
                                 >
                                     View
                                 </div>
-
                                 <div 
                                     className={'button btn-delete'}
                                     onClick={() => this.props.doDelete(e.id)}
@@ -66,19 +57,14 @@ class QuestionsView extends React.Component {
                 })}
             </div>
         )
-        
     }
 
     render() {
-
-
         return (
             <div className={['questions-container content-container']}>
                 <div className={'content-inner'}>
                     <div className={'action-column'}>
-                        <NavLink 
-                            to={'/add-question'}
-                        >
+                        <NavLink to={'/add-question'}>
                             <div className={['btn-add-new button']}>
                                 <div className={'icon-add'}>
                                     <span>+</span>
@@ -90,11 +76,7 @@ class QuestionsView extends React.Component {
                     <div className={'column-header'}>
                         Questions
                     </div>
-
                     {this.renderQuestions()}
-
-
-
                 </div>
             </div>
         )
