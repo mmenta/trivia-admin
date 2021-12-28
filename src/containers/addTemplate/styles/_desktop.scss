@@ -1,5 +1,11 @@
 .add-template-container {
 
+    .section {
+        margin-right: 25px;
 
+        &.three-quarters {
+            width: calc(75% + 25px);
+        }
+    }
 
 }

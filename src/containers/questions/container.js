@@ -1,9 +1,13 @@
 import React from 'react';
-import { getFirestore } from 'firebase/firestore';
-import { collection, onSnapshot, deleteDoc, doc } from "firebase/firestore"; 
+import {
+    getFirestore, 
+    collection, 
+    onSnapshot, 
+    deleteDoc, 
+    doc 
+} from "firebase/firestore"; 
 import { NotificationManager } from 'react-notifications';
 import QuestionsView from './view';
-
 const db = getFirestore();
 
 class QuestionsContainer extends React.Component {

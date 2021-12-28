@@ -82,8 +82,6 @@ a {
     margin-left: 5px;
 }
 
-
-
 .btn {
     display: flex;
     @include Bebas-Neue();
@@ -96,3 +94,111 @@ a {
     width: 100px;
     justify-content: center;
 }
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 25px 0;
+
+    &.quarter {
+        width: 25%;
+    }
+
+    &.half {
+        width: 50%;
+    }
+
+    &.third {
+        width: 33%;
+    }
+
+    &.three-quarters {
+        width: 75%;
+    }
+
+    .label-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .label {
+        flex: 1;
+        @include Bebas-Neue();
+        font-size: 22px;
+    }
+
+    textarea {
+        flex: 1;
+        width: 100%;
+        height: 100px;
+        padding: 20px;
+        @include OpenSans-Regular();
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .textarea-large {
+        height: 500px;
+
+    }
+
+    .input-full {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .input-normal {
+        display: flex;
+        flex: 3;
+        padding: 20px;
+        @include OpenSans-Regular();
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .action-row {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+    }
+
+    .check-contain {
+        display: flex;
+        flex: 2;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+
+        .label {
+            margin-left: 10px;
+        }
+
+        .red {
+            color: red;
+        }
+    }
+
+    .checkbox {
+        width: 20px;
+        height: 20px;
+        border: solid 5px #000;
+    }
+}
+
+.btn-save {
+    margin-top: 50px;
+    align-self: flex-start;
+    color: red;
+}
+
