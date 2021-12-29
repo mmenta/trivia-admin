@@ -30,14 +30,14 @@ class SidebarView extends React.Component {
                             Templates
                         </NavLink>
                     </li>
-                    <li>
+                    {/* <li>
                         <NavLink
                             to={'/articles'}
                             onClick={() => this.props.data.toggleSidebar(false)}
                         >
                             Articles
                         </NavLink>
-                    </li>
+                    </li> */}
                     <li>
                         <NavLink
                             to={'/campaigns'}

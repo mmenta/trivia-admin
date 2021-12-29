@@ -3,9 +3,6 @@ import {
     NavLink,
     useHistory,
 } from 'react-router-dom';
-import { NotificationManager } from 'react-notifications';
-import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore"; 
-const db = getFirestore();
 
 function TemplatesView(props) {
     const history = useHistory();

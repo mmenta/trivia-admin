@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-    NavLink,
     useHistory,
 } from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
-import {  
+import ReactHtmlParser from 'react-html-parser'
+import {
     getFirestore, 
     collection, 
     addDoc, 
@@ -33,7 +33,6 @@ function AddTemplateView(props) {
             setDescription(data.description);
             setMarkup(data.markup);
         }
-        
     }, []);
 
     async function saveNew() {
@@ -55,7 +54,7 @@ function AddTemplateView(props) {
             category: category,
             markup: markup,
             description: description,
-        }).then((doc) => {
+        }).then(() => {
             console.log(`update => ${id}`);
             history.push('/templates');
         });
@@ -65,7 +64,6 @@ function AddTemplateView(props) {
         NotificationManager.success('Saved', '');
 
         // validate
-        console.log('props.edit >> ', props.edit);
 
 
         // save to firebase
@@ -145,7 +143,7 @@ function AddTemplateView(props) {
 
     function renderMarkup() {
         return (
-            <div className={'section three-quarters desc-align'}>
+            <div className={'section full desc-align'}>
                 <div className={['label label-row']}>
                     Email Template Markup (paste here)
                 </div>
@@ -160,8 +158,21 @@ function AddTemplateView(props) {
         )
     }
 
+    function renderPreview() {
+        return (
+            <div className={'section preview'}>
+                <div className={['label label-row']}>
+                    Preview
+                </div>
+                <div className={'preview-box'}>
+                    { ReactHtmlParser(markup) }
+                </div>
+            </div>
+        )
+    }
+
     return (
-      <div className={['add-template-container content-container']}>
+        <div className={['add-template-container content-container']}>
             <div className={'content-inner'}>
                 <div className={'column-header'}>
                     Create Email Template
@@ -169,11 +180,12 @@ function AddTemplateView(props) {
 
                 <div className={'flex-row'}>
                     { renderName() }
-                    { renderCategory() }    
+                    { renderCategory() }
                 </div>
 
                 { renderDescription() }
                 { renderMarkup() }
+                { renderPreview() }
 
                 <div 
                     className={'btn-save btn'}

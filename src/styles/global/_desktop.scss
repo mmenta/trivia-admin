@@ -194,6 +194,14 @@ a {
         height: 20px;
         border: solid 5px #000;
     }
+
+    .preview-box {
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 25px;
+        border: solid 5px #000;
+    }
 }
 
 .btn-save {
