@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {} from 'react';
 import {
     NavLink,
     useHistory,
 } from 'react-router-dom';
+import { FormatDate } from '../../config/methods';
 
 function TemplatesView(props) {
     const history = useHistory();
@@ -16,31 +17,51 @@ function TemplatesView(props) {
         });
     }
 
+    function renderHeaderRow() {
+        return (
+            <div className={'row header-row'}>
+                <div className={'col'}>Template Name</div>
+                <div className={'col small'}>Category</div>
+                <div className={'col'}>Description</div>
+                <div className={'col small'}>Date</div>
+                <div className={'col small col-alt'}></div>
+            </div>
+        )
+    }
+
     function renderTemplates(data) {
         return (
             <div>
                 {data.map((e, i) => {
+                    let mod = ( i % 2 == 0 ) ? 'even' : 'odd';
+
                     return (
-                        <div className={'row'} key={i}>
-                            <div className={'col'}>
+                        <div className={`row ${mod}`} key={i}>
+                            <div 
+                                className={'col'}
+                                onClick={() => viewTemplate(e.id)}
+                            >
                                 { e.name }
                             </div>
-                            <div className={'col'}>
+                            <div 
+                                className={'col small'}
+                                onClick={() => viewTemplate(e.id)}
+                            >
                                 { e.category }
                             </div>
-                            <div className={'col'}>
+                            <div 
+                                className={'col'}
+                                onClick={() => viewTemplate(e.id)}
+                            >
                                 { e.description }
                             </div>
-                            <div className={'col'}>
-                                { e.timestamp.seconds }
+                            <div 
+                                className={'col small'}
+                                onClick={() => viewTemplate(e.id)}
+                            >
+                                {FormatDate(e.timestamp.seconds)}
                             </div>
-                            <div className={'col col-alt'}>
-                                <div 
-                                    className={'button btn-view'}
-                                    onClick={() => viewTemplate(e.id)}
-                                >
-                                    View
-                                </div>
+                            <div className={'col small col-alt'}>
                                 <div 
                                     className={'button btn-delete'}
                                     onClick={() => props.doDelete(e.id)}
@@ -71,7 +92,8 @@ function TemplatesView(props) {
                 <div className={'column-header'}>
                     Templates
                 </div>
-                {renderTemplates(props.data)}
+                { renderHeaderRow() }
+                { renderTemplates(props.data) }
             </div>
         </div>
     )

@@ -1,6 +1,16 @@
 import React, {} from 'react';
+import {
+    NavLink,
+} from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
-import { getFirestore, collection, addDoc, setDoc, doc } from "firebase/firestore"; 
+import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    setDoc, 
+    doc,
+    Timestamp,
+} from "firebase/firestore"; 
 const db = getFirestore();
 
 class AddQuestionsView extends React.Component {
@@ -43,6 +53,7 @@ class AddQuestionsView extends React.Component {
                 question: question,
                 answers: answers,
                 correctAnswer: correctAnswer,
+                timestamp: Timestamp.now(),
             }).then((doc) => {
                 console.log(`saved => ${doc.id} => `, this.state);
             });
@@ -133,14 +144,12 @@ class AddQuestionsView extends React.Component {
 
                 return (
                     <div className={'section'} key={i}>
-
                         <div className={'label-row'}>
                             <div className={'label'}>
                                 Answer {iterate}
                             </div>
                             {this.renderCorrectCheckmark(i)}
                         </div>
-
                         <div className={'input-full'}>
                             <input 
                                 className={'input-normal'} 
@@ -187,6 +196,16 @@ class AddQuestionsView extends React.Component {
             <>
             <div className={['questions-container content-container']}>
                 <div className={'content-inner'}>
+                    <div className={'action-column'}>
+                        <NavLink to={'/'}>
+                            <div className={['btn-add-new button']}>
+                                <div className={'icon-back'}>
+                                    <span>{'<'}</span>
+                                </div>
+                                <div className={'add-text'}>Back</div>
+                            </div>
+                        </NavLink>
+                    </div>
                     <div className={'column-header'}>
                         Create Question
                     </div>

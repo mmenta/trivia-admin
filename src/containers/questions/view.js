@@ -2,6 +2,7 @@ import React, {} from 'react';
 import {
     NavLink
 } from 'react-router-dom';
+import { FormatDate } from '../../config/methods';
 
 class QuestionsView extends React.Component {
     constructor(props) {
@@ -18,44 +19,54 @@ class QuestionsView extends React.Component {
         });
     }
 
-    renderQuestions() {
-        let { data } = this.props;
-
+    renderHeaderRow() {
         return (
-            <div>
-                {data.map((e, i) => {
-                    return (
-                        <div className={'row'} key={i}>
-                            <div className={'col'}>
-                                {e.id}
-                            </div>
-                            <div className={'col'}>
-                                {e.question}
-                            </div>
-                            <div className={'col'}>
-                                {e.answers[e.correctAnswer]}
-                            </div>
-                            <div className={'col'}>
-                                {'11/07/21'}
-                            </div>
-                            <div className={'col col-alt'}>
-                                <div 
-                                    className={'button btn-view'}
-                                    onClick={() => this.viewQuestion(e.id)}
-                                >
-                                    View
-                                </div>
-                                <div 
-                                    className={'button btn-delete'}
-                                    onClick={() => this.props.doDelete(e.id)}
-                                >
-                                    Delete
-                                </div>
+            <div className={'row header-row'}>
+                <div className={'col'}>Question</div>
+                <div className={'col'}>Answer</div>
+                <div className={'col small'}>Date</div>
+                <div className={'col small col-alt'}></div>
+            </div>
+        )
+    }
+
+    renderQuestions(data) {
+        return (
+            <>
+            {data.map((e, i) => {
+                let mod = ( i % 2 == 0 ) ? 'even' : 'odd';
+                return (
+                    <div className={`row ${mod}`} key={i}>
+                        <div 
+                            className={'col'}
+                            onClick={() => this.viewQuestion(e.id)}
+                        >
+                            {e.question}
+                        </div>
+                        <div 
+                            className={'col'}
+                            onClick={() => this.viewQuestion(e.id)}
+                        >
+                            {e.answers[e.correctAnswer]
+                        }</div>
+                        <div 
+                            className={'col small'}
+                            onClick={() => this.viewQuestion(e.id)}
+                        >
+                            {FormatDate(e.timestamp.seconds)}
+                        </div>
+                        <div className={'col small col-alt'}>
+                            <div 
+                                className={'button btn-delete'}
+                                onClick={() => this.props.doDelete(e.id)}
+                            >
+                                Delete
                             </div>
                         </div>
-                    )
-                })}
-            </div>
+                    </div>
+                )
+            })}
+            </>
         )
     }
 
@@ -76,7 +87,8 @@ class QuestionsView extends React.Component {
                     <div className={'column-header'}>
                         Questions
                     </div>
-                    {this.renderQuestions()}
+                    { this.renderHeaderRow() }
+                    { this.renderQuestions(this.props.data) }
                 </div>
             </div>
         )

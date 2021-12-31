@@ -1,5 +1,6 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+    NavLink,
     useHistory,
 } from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
@@ -29,10 +30,40 @@ function AddCampaignView(props) {
     // componentDidMount alternative
     useEffect(() => {
         // run function & dispatch here
+        if ( props.edit ) {
+            let data = props.data;
+            let templates = props.templates;
+            let trivia = props.trivia;
+
+            setName(data.name);
+            setSubject(data.subjectLine);
+            setFrom(data.fromLine);
+            setLink(data.outgoingLink);
+
+            let templateIndex, triviaIndex;
+
+            // determine templateSelect
+            templates.forEach((e, i) => {
+                if ( e.id == data.templateId ) {
+                    templateIndex = i;
+                }
+            });
+
+            trivia.forEach((j, k) => {
+                if ( j.id == data.triviaId ) {
+                    triviaIndex = k;
+                }
+            });
+
+            handleTemplate(templateIndex, triviaIndex);
+            setTrivia(triviaIndex);
+        } else {
+            setTrivia('initial');
+            setTemplate('initial');
+        }
     }, []);
 
-    async function doSave() {
-        NotificationManager.success('Saved Campaign');
+    async function saveNew() {
         await addDoc(collection(db, 'campaigns'), {
             name: name,
             subjectLine: subject,
@@ -47,58 +78,90 @@ function AddCampaignView(props) {
         });
     }
 
+    async function saveEdit(id) {
+        await updateDoc(doc(db, 'campaigns', id), {
+            name: name,
+            subjectLine: subject,
+            fromLine: from,
+            outgoingLink: link,
+            templateId: props.templates[templateSelect].id,
+            triviaId: props.trivia[triviaSelect].id,
+        }).then(() => {
+            console.log(`update => ${id}`);
+            history.push('/campaigns');
+        });
+    }
+
+    function doSave() {
+        NotificationManager.success('Saved Campaign');
+
+        // validate
+
+        // save to firebase
+        !props.edit ? saveNew() : saveEdit(props.data.id);        
+    }
+
     function handleName(e) {
-        setName(e.target.value);
+        setName(e);
     }
 
     function handleSubject(e) {
-        setSubject(e.target.value);
+        setSubject(e);
     }
 
     function handleFrom(e) {
-        setFrom(e.target.value);
-    }
-
-    function handleTemplate(e) {
-        setTemplate(e.target.value);
-
-        // load preview
-        setMarkup(props.templates[e.target.value].markup);
-
-        // parse questions into markup
-        if ( triviaSelect ) {
-            parseIntoMarkup(triviaSelect, e.target.value);
-        }
-    }
-
-    function handleTrivia(e) {
-        setTrivia(e.target.value);
-
-        // parse questions into markup preview
-        if ( templateSelect ) {
-            parseIntoMarkup(e.target.value, templateSelect);
-        }
+        setFrom(e);
     }
 
     function handleLink(e) {
-        setLink(e.target.value);
+        setLink(e);
     }
 
-    function parseIntoMarkup(trivSelect, tempSelect) {
-        let markupRaw = props.templates[tempSelect].markup;
-        let markupFinal;
+    function handleTemplate(templateIndex, triviaIndex) {
+        setTemplate(templateIndex);
+
+        let localMarkup = templateIndex === 'initial' ?
+            '' : props.templates[templateIndex].markup;
+
+        setMarkup(localMarkup);
+
+        // parse questions into markup
+        if ( triviaIndex !== 'initial' ) {
+            parseIntoMarkup(triviaIndex, templateIndex);
+        }
+    }
+
+    function handleTrivia(triviaIndex, templateIndex) {
+        setTrivia(triviaIndex);
+
+        // parse questions into markup preview
+        if ( templateIndex !== 'initial' ) {
+            parseIntoMarkup(triviaIndex, templateIndex);
+        }
+    }
+
+    function parseIntoMarkup(trivSelect, tempSelect) { 
+        if ( tempSelect === 'initial' ) return false;
+        let markupFinal = props.templates[tempSelect].markup;
         let triviaRaw = props.trivia[trivSelect];
 
         // lets parse questions into markup
-        markupFinal = markupRaw.replace('{{question}}', triviaRaw.question);
-
-        // parse answers
-        triviaRaw.answers.forEach((e, i) => {
-            markupFinal = markupFinal.replace(`{{answer${i}}}`, triviaRaw.answers[i]);
-        });
+        if ( trivSelect !== 'initial' ) {
+            markupFinal = markupFinal.replace('{{question}}', triviaRaw.question);
+            // parse answers
+            triviaRaw.answers.forEach((e, i) => {
+                markupFinal = markupFinal.replace(`{{answer${i}}}`, triviaRaw.answers[i]);
+            });
+        }
             
         // reload preview
         setMarkup(markupFinal);
+    }
+
+    function copyMarkup(e) {
+        NotificationManager.success('Markup copied to clipboard');
+        // copy to clipboard
+        navigator.clipboard.writeText(e);
     }
 
     function renderName() {
@@ -111,7 +174,7 @@ function AddCampaignView(props) {
                     <input 
                         className={'input-normal'}
                         value={name}
-                        onChange={(e) => handleName(e)}
+                        onChange={(e) => handleName(e.target.value)}
                     />    
                 </div>
             </div>
@@ -128,7 +191,7 @@ function AddCampaignView(props) {
                     <input 
                         className={'input-normal'}
                         value={subject}
-                        onChange={(e) => handleSubject(e)}
+                        onChange={(e) => handleSubject(e.target.value)}
                     />    
                 </div>
             </div>
@@ -145,7 +208,7 @@ function AddCampaignView(props) {
                     <input 
                         className={'input-normal'}
                         value={from}
-                        onChange={(e) => handleFrom(e)}
+                        onChange={(e) => handleFrom(e.target.value)}
                     />    
                 </div>
             </div>
@@ -162,7 +225,7 @@ function AddCampaignView(props) {
                     <input 
                         className={'input-normal'}
                         value={link}
-                        onChange={(e) => handleLink(e)}
+                        onChange={(e) => handleLink(e.target.value)}
                     />    
                 </div>
             </div>
@@ -179,9 +242,10 @@ function AddCampaignView(props) {
                 <div className={'input-full select-wrapper'}>
                     <select 
                         value={templateSelect} 
-                        onChange={(e) => handleTemplate(e)}
+                        onChange={(e) => handleTemplate(e.target.value, triviaSelect)}
                         multiple={false}
                     >
+                        <option value={'initial'}></option>
                         {templates.map((e, i) => {
                             return (
                                 <option key={i} value={i}>{e.name}</option>
@@ -204,9 +268,10 @@ function AddCampaignView(props) {
                 <div className={'input-full select-wrapper'}>
                     <select 
                         value={triviaSelect} 
-                        onChange={(e) => handleTrivia(e)}
+                        onChange={(e) => handleTrivia(e.target.value, templateSelect)}
                         multiple={false}
                     >
+                        <option value={'initial'}></option>
                         {trivia.map((e, i) => {
                             return (
                                 <option key={i} value={i}>{e.question}</option>
@@ -225,6 +290,12 @@ function AddCampaignView(props) {
                 <div className={['label label-row']}>
                     Preview
                 </div>
+                <div 
+                    className={'btn-copy btn'}
+                    onClick={() => copyMarkup(markup)}
+                >
+                    Copy Markup
+                </div>
                 <div className={'preview-box'}>
                     { ReactHtmlParser(markup) }
                 </div>
@@ -235,6 +306,16 @@ function AddCampaignView(props) {
     return (
         <div className={['add-campaign-container content-container']}>
             <div className={'content-inner'}>
+                <div className={'action-column'}>
+                    <NavLink to={'/campaigns'}>
+                        <div className={['btn-add-new button']}>
+                            <div className={'icon-back'}>
+                                <span>{'<'}</span>
+                            </div>
+                            <div className={'add-text'}>Back</div>
+                        </div>
+                    </NavLink>
+                </div>
                 <div className={'column-header'}>
                     Create New Campaign
                 </div>

@@ -3,6 +3,7 @@ import {
     NavLink,
     useHistory,
 } from 'react-router-dom';
+import { FormatDate } from '../../config/methods';
 
 function CampaignsView(props) {
     const history = useHistory();
@@ -16,28 +17,44 @@ function CampaignsView(props) {
         });
     }
 
+    function renderHeaderRow() {
+        return (
+            <div className={'row header-row'}>
+                <div className={'col'}>Question</div>
+                <div className={'col'}>Answer</div>
+                <div className={'col'}>Date</div>
+                <div className={'col small col-alt'}></div>
+            </div>
+        )
+    }
+
     function renderCampaigns(data) {
         return (
             <div>
                 {data.map((e, i) => {
+                    let mod = ( i % 2 == 0 ) ? 'even' : 'odd';
+
                     return (
-                        <div className={'row'} key={i}>
-                            <div className={'col'}>
+                        <div className={`row ${mod}`} key={i}>
+                            <div 
+                                className={'col'}
+                                onClick={() => viewCampaign(e.id)}
+                            >
                                 {e.name}
                             </div>
-                            <div className={'col'}>
+                            <div 
+                                className={'col'}
+                                onClick={() => viewCampaign(e.id)}
+                            >
                                 {e.subjectLine}
                             </div>
-                            <div className={'col'}>
-                                {e.templateId}
+                            <div 
+                                className={'col'}
+                                onClick={() => viewCampaign(e.id)}
+                            >
+                                {FormatDate(e.timestamp.seconds)}
                             </div>
-                            <div className={'col col-alt'}>
-                                <div 
-                                    className={'button btn-view'}
-                                    onClick={() => viewCampaign(e.id)}
-                                >
-                                    View
-                                </div>
+                            <div className={'col small col-alt'}>
                                 <div 
                                     className={'button btn-delete'}
                                     onClick={() => props.doDelete(e.id)}
@@ -68,6 +85,7 @@ function CampaignsView(props) {
                 <div className={'column-header'}>
                     Campaigns
                 </div>
+                { renderHeaderRow() }
                 { renderCampaigns(props.data) }
             </div>
         </div>

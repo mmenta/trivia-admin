@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     useHistory,
+    NavLink,
 } from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
 import ReactHtmlParser from 'react-html-parser'
@@ -67,11 +68,7 @@ function AddTemplateView(props) {
 
 
         // save to firebase
-        if ( !props.edit ) {
-            saveNew();
-        } else {
-            saveEdit(props.data.id)
-        }
+        !props.edit ? saveNew() : saveEdit(props.data.id);
     }
 
     function handleName(e) {
@@ -174,6 +171,16 @@ function AddTemplateView(props) {
     return (
         <div className={['add-template-container content-container']}>
             <div className={'content-inner'}>
+                <div className={'action-column'}>
+                    <NavLink to={'/templates'}>
+                        <div className={['btn-add-new button']}>
+                            <div className={'icon-back'}>
+                                <span>{'<'}</span>
+                            </div>
+                            <div className={'add-text'}>Back</div>
+                        </div>
+                    </NavLink>
+                </div>
                 <div className={'column-header'}>
                     Create Email Template
                 </div>

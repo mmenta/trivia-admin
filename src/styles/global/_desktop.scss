@@ -72,6 +72,18 @@ a {
     color: #000;
 }
 
+.icon-back {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    padding-top: 5px;
+    justify-content: center;
+    align-items: center;
+    @include Bebas-Neue();
+    font-size: 52px;
+    color: #000;
+}
+
 .add-text {
     display: flex;
     margin-left: 10px;
@@ -204,9 +216,48 @@ a {
     }
 }
 
+.row {
+    display: flex;
+    padding: 10px 0;
+    justify-content: center;
+    align-items: center;
+    border-bottom: solid 1px #000;
+    @include OpenSans-Regular();
+    font-size: 16px;
+
+    &.odd {
+        background-color: rgba(202,202,202,0.3);
+    }
+
+    .col {
+        flex: 1;
+        margin: 5px 10px;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .col-alt {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+.header-row {
+    @include Bebas-Neue();
+    font-size: 22px;
+}
+
 .btn-save {
     margin-top: 50px;
     align-self: flex-start;
     color: red;
 }
 
+.btn-delete {
+    color: red;
+    @include Bebas-Neue();
+    font-size: 16px;
+    text-transform: uppercase;
+}
