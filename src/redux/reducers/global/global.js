@@ -1,19 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit'
+const SET_LOGIN_STATUS = "SET_LOGIN_STATUS";
 
-const initialState = { value: 0 }
+const initialState = {
+    loginStatus: false,
+};
 
-const counterSlice = createSlice({
-    name: 'counter', // action type
-    initialState, // state
-    reducers: {
-        increment(state) {
-            state.value++
-        },
-        decrement(state) {
-            state.value--
+export default function (state = initialState, action) {
+    switch (action.type) {
+        case SET_LOGIN_STATUS: {
+            let newState = { ...state };
+            newState.loginStatus = action.val
+            return { ...newState };
         }
-    },
-})
-
-export const { increment, decrement } = counterSlice.actions
-export default counterSlice.reducer
+        default:
+            return state;
+    }
+}

@@ -9,11 +9,11 @@ import history from './config/history';
 import { initializeApp } from 'firebase/app';
 import HeaderView from './components/header/';
 import SidebarView from './components/sidebar/';
+import { LocalStorageTypes } from './config/types';
 
 // redux
-import { useSelector, useDispatch } from 'react-redux';
-import { decrement, increment } from './redux/reducers/global/global';
-
+import { connect } from 'react-redux';
+import { mapStateToProps, mapDispatchToProps } from './redux/reducers/map';
 
 const QuestionsContainer = React.lazy(() => import('./containers/questions'));
 const TemplatesContainer = React.lazy(() => import('./containers/templates'));
@@ -39,22 +39,32 @@ const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 // class App extends React.Component {
-function App() {
+function App(props) {
 	const [sidebar, setSidebar] = useState(true);
-	const [login, setLogin] = useState(false);
+
+	useEffect(() => {
+		// console.log('props >> ', props.app);
+		let savedLoginStatus = localStorage.getItem(LocalStorageTypes.loginStatus);
+		if ( savedLoginStatus ) {
+			props.setLoginStatus(true);
+		}
+	}, []);
 
 	function toggleSidebar(val) {
 		setSidebar(val);
 	}
 
 	let setLoginStatus = (status) => {
-		// change this to redux so that it gets saved throughout the app
-		setLogin(status);
+		// change this to persist data per session
+		props.setLoginStatus(status);
+		if ( status ) {
+			localStorage.setItem(LocalStorageTypes.loginStatus, status);
+		}
 	}
 
 	return (
 		<>
-		{ !login && (
+		{ !props.app.loginStatus && (
 			<Suspense fallback={<span>Loading...</span>}>
 				<LoginContainer 
 					setLoginStatus={setLoginStatus}
@@ -63,7 +73,7 @@ function App() {
 			</Suspense>
 		)}
 
-		{ login && (
+		{ props.app.loginStatus && (
 			<Router history={history}>
 				<HeaderView 
 					history={history}
@@ -113,4 +123,7 @@ function App() {
 	);
 }
 
-export default App;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

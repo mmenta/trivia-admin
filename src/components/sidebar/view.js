@@ -2,8 +2,20 @@ import React, {} from 'react';
 import {
     NavLink
 } from 'react-router-dom';
+import { LocalStorageTypes } from '../../config/types';
+
+// redux
+import { connect } from 'react-redux';
+import { mapStateToProps, mapDispatchToProps } from '../../redux/reducers/map';
 
 class SidebarView extends React.Component {
+
+    doLogout() {
+        // remove localstorage
+        localStorage.removeItem(LocalStorageTypes.loginStatus);
+        // set redux
+        this.props.setLoginStatus(false);
+    }
     
     render() {
         let { show } = this.props.data;
@@ -47,10 +59,21 @@ class SidebarView extends React.Component {
                         </NavLink>
                     </li>
                 </ul>
+
+                <div 
+                    className={'btn-logout'}
+                    onClick={() => this.doLogout()}
+                >
+                    Logout
+                </div>
             </div>
             </>
         );
     }
 }
 
-export default SidebarView;
+// export default SidebarView;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SidebarView);

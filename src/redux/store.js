@@ -1,8 +1,8 @@
 import {combineReducers, configureStore } from "@reduxjs/toolkit";
-import counterSlice from './reducers/global';
+import globalReducers from './reducers/global';
 
 const rootReducer = combineReducers({
-  global: counterSlice
+  global: globalReducers
 })
 
 export const store = configureStore({

@@ -44,7 +44,7 @@ function LoginView(props) {
             NotificationManager.success(`Welcome ${username}`, '');
             setTimeout(() => {
                 props.data.setLoginStatus(true);
-            }, 2500);
+            }, 1000);
         } else {
             // fail
             NotificationManager.error('Invalid user/pass', '');
