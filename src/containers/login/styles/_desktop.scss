@@ -1,0 +1,33 @@
+.login-container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    &.content-container {
+        width: 100%;
+    }
+
+    .content-inner {
+        width: 500px;
+    }
+
+    .section {
+        flex-direction: row;
+        margin: 10px 0;
+    }
+
+    .label {
+        flex: 1;
+    }
+
+    .input-full {
+        flex: 3;
+    }
+
+    .btn-login {
+        color: #000;
+        align-self: flex-end;
+        margin-top: 20px;
+    }
+}

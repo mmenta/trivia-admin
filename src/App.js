@@ -1,14 +1,19 @@
-import React, { Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { NotificationContainer } from 'react-notifications';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
 } from 'react-router-dom';
+import history from './config/history';
 import { initializeApp } from 'firebase/app';
 import HeaderView from './components/header/';
 import SidebarView from './components/sidebar/';
-import history from './config/history';
+
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { decrement, increment } from './redux/reducers/global/global';
+
 
 const QuestionsContainer = React.lazy(() => import('./containers/questions'));
 const TemplatesContainer = React.lazy(() => import('./containers/templates'));
@@ -18,6 +23,7 @@ const CampaignsContainer = React.lazy(() => import('./containers/campaigns'));
 const AddQuestionContainer = React.lazy(() => import('./containers/addQuestion'));
 const AddTemplateContainer = React.lazy(() => import('./containers/addTemplate'));
 const AddCampaignContainer = React.lazy(() => import('./containers/addCampaign'));
+const LoginContainer = React.lazy(() => import('./containers/login'));
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBXFEkNhGKJgP_We4zacdi7PwFG38KD2pw",
@@ -32,30 +38,42 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-class App extends React.Component {
+// class App extends React.Component {
+function App() {
+	const [sidebar, setSidebar] = useState(true);
+	const [login, setLogin] = useState(false);
 
-	state = {
-		sidebar: true,
+	function toggleSidebar(val) {
+		setSidebar(val);
 	}
 
-	toggleSidebar = (val) => {
-		this.setState({
-			sidebar: val,
-		});
+	let setLoginStatus = (status) => {
+		// change this to redux so that it gets saved throughout the app
+		setLogin(status);
 	}
 
-	render() {
-		return (
+	return (
+		<>
+		{ !login && (
+			<Suspense fallback={<span>Loading...</span>}>
+				<LoginContainer 
+					setLoginStatus={setLoginStatus}
+				/>
+				<NotificationContainer />
+			</Suspense>
+		)}
+
+		{ login && (
 			<Router history={history}>
 				<HeaderView 
 					history={history}
-					show={this.state.sidebar} 
-					toggleSidebar={this.toggleSidebar}
+					show={sidebar} 
+					toggleSidebar={toggleSidebar}
 				/>
 				<SidebarView 
 					history={history}
-					show={this.state.sidebar} 
-					toggleSidebar={this.toggleSidebar}
+					show={sidebar} 
+					toggleSidebar={toggleSidebar}
 				/>
 				<NotificationContainer />
 				<Suspense fallback={<span>Loading...</span>}>
@@ -64,7 +82,7 @@ class App extends React.Component {
 							<Route 
 								exact path='/'
 								component={QuestionsContainer}
-							/>
+							/>	
 							<Route path='/templates'>
 								<TemplatesContainer />
 							</Route>
@@ -90,8 +108,9 @@ class App extends React.Component {
 					</div>
 				</Suspense>
 			</Router>
-		);
-	}
+		)}
+		</>
+	);
 }
 
 export default App;
