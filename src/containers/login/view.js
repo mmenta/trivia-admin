@@ -35,11 +35,11 @@ function LoginView(props) {
 
     function doLogin() {
         // temp hardcode
-        let validUser = 'mario';
-        let validPass = 'password';
+        let validUser = ['mario', 'rjay'];
+        let validPass = ['P8ssword!'];
 
         // check user / pass in firebase
-        if ( (validUser === username) && (password === validPass) ) {
+        if ( (validUser.includes(username)) && (validPass.includes(password)) ) {
             // success
             NotificationManager.success(`Welcome ${username}`, '');
             setTimeout(() => {
