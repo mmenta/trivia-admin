@@ -1,0 +1,24 @@
+.image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 560px;
+    height: 280px;
+    border: solid 2px #000;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.image-preview {
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-remove {
+    margin-top: 10px;
+    @include OpenSans-Regular();
+    font-size: 16px;
+    color: red;
+    cursor: pointer;
+}

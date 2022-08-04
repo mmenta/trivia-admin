@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import history from './config/history';
 import { initializeApp } from 'firebase/app';
+
 import HeaderView from './components/header/';
 import SidebarView from './components/sidebar/';
 import { LocalStorageTypes } from './config/types';
@@ -66,7 +67,7 @@ function App(props) {
 		<>
 		{ !props.app.loginStatus && (
 			<Suspense fallback={<span>Loading...</span>}>
-				<LoginContainer 
+				<LoginContainer
 					setLoginStatus={setLoginStatus}
 				/>
 				<NotificationContainer />
@@ -75,24 +76,24 @@ function App(props) {
 
 		{ props.app.loginStatus && (
 			<Router history={history}>
-				<HeaderView 
+				<HeaderView
 					history={history}
-					show={sidebar} 
+					show={sidebar}
 					toggleSidebar={toggleSidebar}
 				/>
-				<SidebarView 
+				<SidebarView
 					history={history}
-					show={sidebar} 
+					show={sidebar}
 					toggleSidebar={toggleSidebar}
 				/>
 				<NotificationContainer />
 				<Suspense fallback={<span>Loading...</span>}>
 					<div className={'app-container'}>
 						<Switch>
-							<Route 
+							<Route
 								exact path='/'
 								component={QuestionsContainer}
-							/>	
+							/>
 							<Route path='/templates'>
 								<TemplatesContainer />
 							</Route>
@@ -102,15 +103,15 @@ function App(props) {
 							<Route path='/campaigns'>
 								<CampaignsContainer />
 							</Route>
-							<Route 
+							<Route
 								path='/add-question'
 								component={AddQuestionContainer}
 							/>
-							<Route 
+							<Route
 								path='/add-template'
 								component={AddTemplateContainer}
 							/>
-							<Route 
+							<Route
 								path='/add-campaign'
 								component={AddCampaignContainer}
 							/>
