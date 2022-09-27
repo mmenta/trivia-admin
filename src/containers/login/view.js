@@ -35,7 +35,7 @@ function LoginView(props) {
 
     function doLogin() {
         // temp hardcode
-        let validUser = ['mario', 'rjay'];
+        let validUser = ['mario', 'rjay', 'sp'];
         let validPass = ['P8ssword!'];
 
         // check user / pass in firebase
