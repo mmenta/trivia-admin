@@ -27,24 +27,28 @@ class AddQuestionsView extends React.Component {
             answers: [''],
             correctAnswer: 0,
             selectedImage: false,
+            hint: '',
+            category: '',
         }
     }
 
     componentDidUpdate(prevProps) {
         if ( this.props.edit !== prevProps.edit ) {
             if ( this.props.edit ) {
-             let { question, answers, correctAnswer } = this.props.data;
+             let { question, answers, correctAnswer, hint, category } = this.props.data;
                 this.setState({
                     question: question,
                     answers: answers,
                     correctAnswer: correctAnswer,
+                    hint: hint,
+                    category: category,
                 });
             }
         }
     }
     
     async doSave() {
-        let { question, answers, correctAnswer } = this.state;
+        let { question, answers, correctAnswer, hint, category } = this.state;
 
         // show notification
         NotificationManager.success('Saved', '');
@@ -59,6 +63,8 @@ class AddQuestionsView extends React.Component {
                 question: question,
                 answers: answers,
                 correctAnswer: correctAnswer,
+                hint: hint,
+                category: category.toLowerCase(),
                 timestamp: Timestamp.now(),
             }).then((doc) => {
                 console.log(`saved => ${doc.id} => `, this.state);
@@ -69,6 +75,9 @@ class AddQuestionsView extends React.Component {
                 question: question,
                 answers: answers,
                 correctAnswer: correctAnswer,
+                hint: hint,
+                category: category.toLowerCase(),
+                timestamp: Timestamp.now(),
             });
         }
 
@@ -96,6 +105,8 @@ class AddQuestionsView extends React.Component {
         this.setState({
             question: '',
             answers: [''],
+            hint: '',
+            category: '',
             correctAnswer: 0,
         });
     }
@@ -114,6 +125,18 @@ class AddQuestionsView extends React.Component {
         this.setState({
             correctAnswer: i,
         });
+    }
+
+    handleHintChange(e) {
+        this.setState({
+            hint: e.target.value,
+        })
+    }
+
+    handleCategoryChange(e) {
+        this.setState({
+            category: e.target.value,
+        })
     }
 
     handleQuestionChange(e) {
@@ -150,6 +173,45 @@ class AddQuestionsView extends React.Component {
             >
                 {correctAnswer != i && (<div className={'checkbox'}></div>)}
                 <div className={styling}>{text}</div>
+            </div>
+        )
+    }
+
+    renderHint() {
+         let { hint } = this.state;
+
+        return (
+            <div className={'section'}>
+                <div className={['label label-row']}>
+                    Hint
+                </div>
+                <div className={'input-full'}>
+                    <textarea 
+                        className={'textarea-normal'}
+                        value={hint}
+                        onChange={(e) => this.handleHintChange(e)}
+                    >    
+                    </textarea>
+                </div>
+            </div>
+        )
+    }
+
+    renderCategory() {
+         let { category } = this.state;
+
+        return (
+            <div className={'section'}>
+                <div className={['label label-row']}>
+                    Category
+                </div>
+                <div className={'input-half'}>
+                    <input 
+                        className={'input-normal'} 
+                        onChange={(ev) => this.handleCategoryChange(ev)}
+                        value={category}
+                    />
+                </div>
             </div>
         )
     }
@@ -273,6 +335,8 @@ class AddQuestionsView extends React.Component {
                         Create Question
                     </div>
                     {this.renderQuestion()}
+                    {this.renderCategory()}
+                    {this.renderHint()}
                     {/* {this.renderImageUpload()} */}
                     {this.renderAnswers()}
                     <div 

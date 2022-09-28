@@ -76,48 +76,50 @@ function App(props) {
 
 		{ props.app.loginStatus && (
 			<Router history={history}>
-				<HeaderView
-					history={history}
-					show={sidebar}
-					toggleSidebar={toggleSidebar}
-				/>
-				<SidebarView
-					history={history}
-					show={sidebar}
-					toggleSidebar={toggleSidebar}
-				/>
-				<NotificationContainer />
-				<Suspense fallback={<span>Loading...</span>}>
-					<div className={'app-container'}>
-						<Switch>
-							<Route
-								exact path='/'
-								component={QuestionsContainer}
-							/>
-							<Route path='/templates'>
-								<TemplatesContainer />
-							</Route>
-							<Route path='/articles'>
-								<ArticlesContainer />
-							</Route>
-							<Route path='/campaigns'>
-								<CampaignsContainer />
-							</Route>
-							<Route
-								path='/add-question'
-								component={AddQuestionContainer}
-							/>
-							<Route
-								path='/add-template'
-								component={AddTemplateContainer}
-							/>
-							<Route
-								path='/add-campaign'
-								component={AddCampaignContainer}
-							/>
-						</Switch>
-					</div>
-				</Suspense>
+				<div className={`contain-route ${sidebar}`}>
+					<HeaderView
+						history={history}
+						show={sidebar}
+						toggleSidebar={toggleSidebar}
+					/>
+					<SidebarView
+						history={history}
+						show={sidebar}
+						toggleSidebar={toggleSidebar}
+					/>
+					<NotificationContainer />
+					<Suspense fallback={<span>Loading...</span>}>
+						<div className={'app-container'}>
+							<Switch>
+								<Route
+									exact path='/'
+									component={QuestionsContainer}
+								/>
+								<Route path='/templates'>
+									<TemplatesContainer />
+								</Route>
+								<Route path='/articles'>
+									<ArticlesContainer />
+								</Route>
+								<Route path='/campaigns'>
+									<CampaignsContainer />
+								</Route>
+								<Route
+									path='/add-question'
+									component={AddQuestionContainer}
+								/>
+								<Route
+									path='/add-template'
+									component={AddTemplateContainer}
+								/>
+								<Route
+									path='/add-campaign'
+									component={AddCampaignContainer}
+								/>
+							</Switch>
+						</div>
+					</Suspense>
+				</div>
 			</Router>
 		)}
 		</>

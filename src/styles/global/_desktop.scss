@@ -12,6 +12,16 @@ a {
     text-decoration: none;
 }
 
+.contain-route {
+    width: 100%;
+
+    &.true {
+        height: 100vh;
+        overflow: hidden;
+        position: fixed;
+    }
+}
+
 .content-container {
     display: flex;
     position: absolute;
