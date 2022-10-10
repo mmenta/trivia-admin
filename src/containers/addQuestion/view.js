@@ -12,11 +12,12 @@ import {
     Timestamp,
 } from "firebase/firestore"; 
 
-// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-// Create a root reference
-// const storage = getStorage();
+import { getStorage } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+
 
 const db = getFirestore();
+const storage = getStorage();
 
 class AddQuestionsView extends React.Component {
     constructor(props) {
@@ -29,22 +30,51 @@ class AddQuestionsView extends React.Component {
             selectedImage: false,
             hint: '',
             category: '',
+            image: false,
         }
     }
 
     componentDidUpdate(prevProps) {
         if ( this.props.edit !== prevProps.edit ) {
             if ( this.props.edit ) {
-             let { question, answers, correctAnswer, hint, category } = this.props.data;
+                let { 
+                    question, 
+                    answers, 
+                    correctAnswer,
+                    hint, 
+                    category, 
+                    image 
+                } = this.props.data;
+
                 this.setState({
                     question: question,
                     answers: answers,
                     correctAnswer: correctAnswer,
                     hint: hint,
                     category: category,
+                    selectedImage: image,
                 });
             }
         }
+    }
+
+    doUploadImage(selectedImage, docId) {
+        const storageRef = ref(storage, `files/${docId}.png`);
+        const uploadTask = uploadBytesResumable(storageRef, selectedImage);
+
+        uploadTask.on('state_changed',
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        // save url to firebase
+                        setDoc(doc(db, 'questions', docId), {
+                            image: downloadURL
+                            }, { merge: true}
+                        );
+
+                        console.log('saved >> ', downloadURL);
+                    });
+                }
+        )
     }
     
     async doSave() {
@@ -54,11 +84,14 @@ class AddQuestionsView extends React.Component {
         NotificationManager.success('Saved', '');
 
         // validate
-
+        
+        // upload image
+        let { selectedImage } = this.state;
 
         // save to firebase
         // TODO: let's add a timestamp
         if ( !this.props.edit ) {
+
             await addDoc(collection(db, 'questions'), {
                 question: question,
                 answers: answers,
@@ -68,8 +101,12 @@ class AddQuestionsView extends React.Component {
                 timestamp: Timestamp.now(),
             }).then((doc) => {
                 console.log(`saved => ${doc.id} => `, this.state);
+                if ( selectedImage ) {
+                    this.doUploadImage(selectedImage, doc.id);
+                }
             });
         } else {
+
             let { id } = this.props.history.location.state;
             await setDoc(doc(db, 'questions', id), {
                 question: question,
@@ -79,6 +116,10 @@ class AddQuestionsView extends React.Component {
                 category: category.toLowerCase(),
                 timestamp: Timestamp.now(),
             });
+
+            if ( selectedImage ) {
+                this.doUploadImage(selectedImage, id);
+            }
         }
 
         // clear inputs
@@ -335,9 +376,9 @@ class AddQuestionsView extends React.Component {
                         Create Question
                     </div>
                     {this.renderQuestion()}
+                    {this.renderImageUpload()}
                     {this.renderCategory()}
                     {this.renderHint()}
-                    {/* {this.renderImageUpload()} */}
                     {this.renderAnswers()}
                     <div 
                         className={['btn-add-answer button']}
