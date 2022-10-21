@@ -10,10 +10,16 @@ import {
     setDoc, 
     doc,
     Timestamp,
+    updateDoc,
 } from "firebase/firestore"; 
 
-import { getStorage } from 'firebase/storage';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { 
+    ref, 
+    getDownloadURL, 
+    uploadBytesResumable, 
+    getStorage, 
+    deleteObject,
+} from "firebase/storage";
 
 
 const db = getFirestore();
@@ -43,7 +49,7 @@ class AddQuestionsView extends React.Component {
                     correctAnswer,
                     hint, 
                     category, 
-                    image 
+                    image,
                 } = this.props.data;
 
                 this.setState({
@@ -129,17 +135,30 @@ class AddQuestionsView extends React.Component {
         this.props.history.push('/');
     }
 
-    doRemoveImage() {
-        // this.setState({
-        //     selectedImage: false,
-        // })
+    async doRemoveImage() {
+        this.setState({
+            selectedImage: false,
+        })
 
-        // Create a reference to 'mountains.jpg'
-        // const mountainsRef = ref(storage, this.state.selectedImage);
+        // Create a reference to image
+        const imageRef = ref(storage, this.state.selectedImage);
 
-        // uploadBytes(mountainsRef, this.state.selectedImage).then((snapshot) => {
-        //     console.log('Uploaded a blob or file! >> ', snapshot);
-        // });
+        // Delete the file
+        deleteObject(imageRef).then(() => {
+            // File deleted successfully
+            console.group('file deleted >>');
+        }).catch((error) => {
+            // Uh-oh, an error occurred!
+            console.log('error >> ', error);
+        });
+
+        // delete from firebase
+        if ( this.props.edit ) {
+            let { id } = this.props.history.location.state;
+            await updateDoc(doc(db, 'questions', id), {
+                image: false
+            });
+        }
     }
 
     clearInputs() {
@@ -313,21 +332,46 @@ class AddQuestionsView extends React.Component {
         )
     }
 
-    renderImageUpload() {
+    renderSelectedImage() {
+        let { selectedImage } = this.state;
+        if ( !selectedImage ) return null;
 
+        let { image } = this.props.data;
+        let imShow = typeof image !== 'undefined' && image ? 
+                selectedImage :  URL.createObjectURL(selectedImage);
+
+        return (
+            <>
+            <div className={'image-wrapper'}>    
+                <img 
+                    alt="not found" 
+                    className={'image-preview'} 
+                    src={imShow} 
+                />
+            </div>
+            <div 
+                onClick={() => this.doRemoveImage()}
+                className={'btn-remove'}
+            >
+                Remove
+            </div>
+            </>
+        )
+    }
+
+    renderImageUpload() {
         return (
             <div className={'section'}>
                 <div className={['label label-row']}>
                     Upload Image (optional)
                 </div>
-
                 { !this.state.selectedImage && ( 
                     <div className={'input-full'}>
                         <input
                             type="file"
                             name="myImage"
                             onChange={(event) => {
-                                console.log(event.target.files[0]);
+                                // console.log(event.target.files[0]);
                                 this.setState({
                                     selectedImage: event.target.files[0],
                                 })
@@ -335,24 +379,7 @@ class AddQuestionsView extends React.Component {
                         />
                     </div>
                 )}
-                
-                { this.state.selectedImage && (
-                    <>
-                        <div className={'image-wrapper'}>    
-                            <img 
-                                alt="not found" 
-                                className={'image-preview'} 
-                                src={URL.createObjectURL(this.state.selectedImage)} 
-                            />
-                        </div>
-                        <div 
-                            onClick={() => this.doRemoveImage()}
-                            className={'btn-remove'}
-                        >
-                            Remove
-                        </div>
-                    </>
-                )}
+                { this.renderSelectedImage() }
             </div>
         )
     }
