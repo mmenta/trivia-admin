@@ -42,6 +42,7 @@ class AddQuestionsView extends React.Component {
 
     componentDidUpdate(prevProps) {
         if ( this.props.edit !== prevProps.edit ) {
+
             if ( this.props.edit ) {
                 let { 
                     question, 
@@ -258,7 +259,7 @@ class AddQuestionsView extends React.Component {
     }
 
     renderCategory() {
-         let { category } = this.state;
+        let { category } = this.state;
 
         return (
             <div className={'section'}>
@@ -371,7 +372,6 @@ class AddQuestionsView extends React.Component {
                             type="file"
                             name="myImage"
                             onChange={(event) => {
-                                // console.log(event.target.files[0]);
                                 this.setState({
                                     selectedImage: event.target.files[0],
                                 })
@@ -384,7 +384,26 @@ class AddQuestionsView extends React.Component {
         )
     }
 
+    renderId(edit) {
+        if (!edit) return null;
+        let { id } = this.props.history.location.state;
+
+        return (
+            <div className={'section'}>
+                <div className={['label label-row']}>
+                    ID
+                </div>
+                <div className={'input-half'}>
+                    { id }
+                </div>
+            </div>
+        )
+
+    }
+
     render() {
+        let edit = this.props.edit ? true : false;
+    
         return (
             <>
             <div className={['questions-container content-container']}>
@@ -400,8 +419,10 @@ class AddQuestionsView extends React.Component {
                         </NavLink>
                     </div>
                     <div className={'column-header'}>
-                        Create Question
+                        { edit ? 'Edit' : 'Create' } Question
                     </div>
+
+                    {this.renderId(edit)}
                     {this.renderQuestion()}
                     {this.renderImageUpload()}
                     {this.renderCategory()}
