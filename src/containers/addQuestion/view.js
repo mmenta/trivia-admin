@@ -1,23 +1,24 @@
-import React, {} from 'react';
+import React, { } from 'react';
 import {
     NavLink,
 } from 'react-router-dom';
 import { NotificationManager } from 'react-notifications';
-import { 
-    getFirestore, 
-    collection, 
-    addDoc, 
-    setDoc, 
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    setDoc,
     doc,
     Timestamp,
+    getDocs,
     updateDoc,
-} from "firebase/firestore"; 
+} from "firebase/firestore";
 
-import { 
-    ref, 
-    getDownloadURL, 
-    uploadBytesResumable, 
-    getStorage, 
+import {
+    ref,
+    getDownloadURL,
+    uploadBytesResumable,
+    getStorage,
     deleteObject,
 } from "firebase/storage";
 
@@ -37,20 +38,22 @@ class AddQuestionsView extends React.Component {
             hint: '',
             category: '',
             image: false,
+            defaultQ: false,
         }
     }
 
     componentDidUpdate(prevProps) {
-        if ( this.props.edit !== prevProps.edit ) {
+        if (this.props.edit !== prevProps.edit) {
 
-            if ( this.props.edit ) {
-                let { 
-                    question, 
-                    answers, 
+            if (this.props.edit) {
+                let {
+                    question,
+                    answers,
                     correctAnswer,
-                    hint, 
-                    category, 
+                    hint,
+                    category,
                     image,
+                    defaultQ,
                 } = this.props.data;
 
                 this.setState({
@@ -60,6 +63,7 @@ class AddQuestionsView extends React.Component {
                     hint: hint,
                     category: category,
                     selectedImage: image,
+                    defaultQ: defaultQ
                 });
             }
         }
@@ -70,34 +74,46 @@ class AddQuestionsView extends React.Component {
         const uploadTask = uploadBytesResumable(storageRef, selectedImage);
 
         uploadTask.on('state_changed',
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        // save url to firebase
-                        setDoc(doc(db, 'questions', docId), {
-                            image: downloadURL
-                            }, { merge: true}
-                        );
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    // save url to firebase
+                    setDoc(doc(db, 'questions', docId), {
+                        image: downloadURL
+                    }, { merge: true }
+                    );
 
-                        console.log('saved >> ', downloadURL);
-                    });
-                }
+                    console.log('saved >> ', downloadURL);
+                });
+            }
         )
     }
-    
+
     async doSave() {
-        let { question, answers, correctAnswer, hint, category } = this.state;
+        let { question, answers, correctAnswer, hint, category, defaultQ } = this.state;
 
         // show notification
         NotificationManager.success('Saved', '');
 
         // validate
-        
+
         // upload image
         let { selectedImage } = this.state;
 
         // save to firebase
         // TODO: let's add a timestamp
-        if ( !this.props.edit ) {
+        if (!this.props.edit) {
+
+            // check to see if default Q changed
+            if (defaultQ) {
+                const collectionRef = collection(db, 'questions');
+                const querySnapshot = await getDocs(collectionRef);
+                const updatePromises = querySnapshot.docs.map(doc => {
+                    return updateDoc(doc.ref, {
+                        defaultQ: false
+                    });
+                });
+                await Promise.all(updatePromises);
+            }
 
             await addDoc(collection(db, 'questions'), {
                 question: question,
@@ -106,15 +122,28 @@ class AddQuestionsView extends React.Component {
                 hint: hint,
                 category: category.toLowerCase(),
                 timestamp: Timestamp.now(),
+                defaultQ: defaultQ
             }).then((doc) => {
                 console.log(`saved => ${doc.id} => `, this.state);
-                if ( selectedImage ) {
+                if (selectedImage) {
                     this.doUploadImage(selectedImage, doc.id);
                 }
             });
         } else {
-
             let { id } = this.props.history.location.state;
+
+            // check to see if default Q changed
+            if (defaultQ) {
+                const collectionRef = collection(db, 'questions');
+                const querySnapshot = await getDocs(collectionRef);
+                const updatePromises = querySnapshot.docs.map(doc => {
+                    return updateDoc(doc.ref, {
+                        defaultQ: false
+                    });
+                });
+                await Promise.all(updatePromises);
+            }
+
             await setDoc(doc(db, 'questions', id), {
                 question: question,
                 answers: answers,
@@ -122,9 +151,10 @@ class AddQuestionsView extends React.Component {
                 hint: hint,
                 category: category.toLowerCase(),
                 timestamp: Timestamp.now(),
+                defaultQ: defaultQ
             });
 
-            if ( selectedImage ) {
+            if (selectedImage) {
                 this.doUploadImage(selectedImage, id);
             }
         }
@@ -154,7 +184,7 @@ class AddQuestionsView extends React.Component {
         });
 
         // delete from firebase
-        if ( this.props.edit ) {
+        if (this.props.edit) {
             let { id } = this.props.history.location.state;
             await updateDoc(doc(db, 'questions', id), {
                 image: false
@@ -213,7 +243,7 @@ class AddQuestionsView extends React.Component {
             answers: answerArr,
         });
     }
-    
+
     addNewAnswer() {
         let arrCopy = this.state.answers.slice();
         arrCopy.push('');
@@ -228,7 +258,7 @@ class AddQuestionsView extends React.Component {
         let text = correctAnswer == i ? 'Correct Answer' : 'Mark As Correct Answer';
 
         return (
-            <div 
+            <div
                 className={'check-contain'}
                 onClick={() => this.doCorrect(i)}
             >
@@ -239,7 +269,7 @@ class AddQuestionsView extends React.Component {
     }
 
     renderHint() {
-         let { hint } = this.state;
+        let { hint } = this.state;
 
         return (
             <div className={'section'}>
@@ -247,11 +277,11 @@ class AddQuestionsView extends React.Component {
                     Hint
                 </div>
                 <div className={'input-full'}>
-                    <textarea 
+                    <textarea
                         className={'textarea-normal'}
                         value={hint}
                         onChange={(e) => this.handleHintChange(e)}
-                    >    
+                    >
                     </textarea>
                 </div>
             </div>
@@ -267,8 +297,8 @@ class AddQuestionsView extends React.Component {
                     Category
                 </div>
                 <div className={'input-half'}>
-                    <input 
-                        className={'input-normal'} 
+                    <input
+                        className={'input-normal'}
                         onChange={(ev) => this.handleCategoryChange(ev)}
                         value={category}
                     />
@@ -293,14 +323,14 @@ class AddQuestionsView extends React.Component {
                             {this.renderCorrectCheckmark(i)}
                         </div>
                         <div className={'input-full'}>
-                            <input 
-                                className={'input-normal'} 
+                            <input
+                                className={'input-normal'}
                                 onChange={(ev) => this.handleAnswerChange(ev, i)}
                                 value={e}
                             />
-                            { i !== 0 && (
+                            {i !== 0 && (
                                 <div className={'action-row'}>
-                                    <div 
+                                    <div
                                         className={['btn-remove btn']}
                                         onClick={() => this.doRemove(i)}
                                     >
@@ -322,11 +352,11 @@ class AddQuestionsView extends React.Component {
                     Question
                 </div>
                 <div className={'input-full'}>
-                    <textarea 
+                    <textarea
                         className={'textarea-normal'}
                         value={this.state.question}
                         onChange={(e) => this.handleQuestionChange(e)}
-                    >    
+                    >
                     </textarea>
                 </div>
             </div>
@@ -335,27 +365,27 @@ class AddQuestionsView extends React.Component {
 
     renderSelectedImage() {
         let { selectedImage } = this.state;
-        if ( !selectedImage ) return null;
+        if (!selectedImage) return null;
 
         let { image } = this.props.data;
-        let imShow = typeof image !== 'undefined' && image ? 
-                selectedImage :  URL.createObjectURL(selectedImage);
+        let imShow = typeof image !== 'undefined' && image ?
+            selectedImage : URL.createObjectURL(selectedImage);
 
         return (
             <>
-            <div className={'image-wrapper'}>    
-                <img 
-                    alt="not found" 
-                    className={'image-preview'} 
-                    src={imShow} 
-                />
-            </div>
-            <div 
-                onClick={() => this.doRemoveImage()}
-                className={'btn-remove'}
-            >
-                Remove
-            </div>
+                <div className={'image-wrapper'}>
+                    <img
+                        alt="not found"
+                        className={'image-preview'}
+                        src={imShow}
+                    />
+                </div>
+                <div
+                    onClick={() => this.doRemoveImage()}
+                    className={'btn-remove'}
+                >
+                    Remove
+                </div>
             </>
         )
     }
@@ -366,7 +396,7 @@ class AddQuestionsView extends React.Component {
                 <div className={['label label-row']}>
                     Upload Image (optional)
                 </div>
-                { !this.state.selectedImage && ( 
+                {!this.state.selectedImage && (
                     <div className={'input-full'}>
                         <input
                             type="file"
@@ -379,7 +409,7 @@ class AddQuestionsView extends React.Component {
                         />
                     </div>
                 )}
-                { this.renderSelectedImage() }
+                {this.renderSelectedImage()}
             </div>
         )
     }
@@ -394,57 +424,77 @@ class AddQuestionsView extends React.Component {
                     ID
                 </div>
                 <div className={'input-half'}>
-                    { id }
+                    {id}
                 </div>
             </div>
         )
+    }
 
+    handleCheckbox = (event) => {
+        this.setState({ defaultQ: event.target.checked });
+    }
+
+    renderSetDefault() {
+        return (
+            <div className={'default-container section'}>
+                <div className={['label label-row']}>
+                    Make Default Question
+                </div>
+                <input
+                    className={'default-checkbox'}
+                    type="checkbox"
+                    checked={this.state.defaultQ}
+                    onChange={this.handleCheckbox}
+                />
+            </div>
+        )
     }
 
     render() {
         let edit = this.props.edit ? true : false;
-    
+
         return (
             <>
-            <div className={['questions-container content-container']}>
-                <div className={'content-inner'}>
-                    <div className={'action-column'}>
-                        <NavLink to={'/'}>
-                            <div className={['btn-add-new button']}>
-                                <div className={'icon-back'}>
-                                    <span>{'<'}</span>
+                <div className={['questions-container content-container']}>
+                    <div className={'content-inner'}>
+                        <div className={'action-column'}>
+                            <NavLink to={'/'}>
+                                <div className={['btn-add-new button']}>
+                                    <div className={'icon-back'}>
+                                        <span>{'<'}</span>
+                                    </div>
+                                    <div className={'add-text'}>Back</div>
                                 </div>
-                                <div className={'add-text'}>Back</div>
-                            </div>
-                        </NavLink>
-                    </div>
-                    <div className={'column-header'}>
-                        { edit ? 'Edit' : 'Create' } Question
-                    </div>
-
-                    {this.renderId(edit)}
-                    {this.renderQuestion()}
-                    {this.renderImageUpload()}
-                    {this.renderCategory()}
-                    {this.renderHint()}
-                    {this.renderAnswers()}
-                    <div 
-                        className={['btn-add-answer button']}
-                        onClick={() => this.addNewAnswer()}
-                    >
-                        <div className={'icon-add'}>
-                            <span>+</span>
+                            </NavLink>
                         </div>
-                        <div className={'add-text'}>Add Answer</div>
-                    </div>
-                    <div 
-                        className={'btn-save btn'}
-                        onClick={() => this.doSave()}
-                    >
-                        Save
+                        <div className={'column-header'}>
+                            {edit ? 'Edit' : 'Create'} Question
+                        </div>
+
+                        {this.renderId(edit)}
+                        {this.renderSetDefault()}
+                        {this.renderQuestion()}
+                        {this.renderImageUpload()}
+                        {this.renderCategory()}
+                        {this.renderHint()}
+                        {this.renderAnswers()}
+                        <div
+                            className={['btn-add-answer button']}
+                            onClick={() => this.addNewAnswer()}
+                        >
+                            <div className={'icon-add'}>
+                                <span>+</span>
+                            </div>
+                            <div className={'add-text'}>Add Answer</div>
+                        </div>
+                        <div
+                            className={'btn-save btn'}
+                            onClick={() => this.doSave()}
+                        >
+                            Save
+                        </div>
                     </div>
                 </div>
-            </div>
             </>
         )
     }
